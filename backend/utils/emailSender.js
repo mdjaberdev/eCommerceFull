@@ -10,13 +10,24 @@ const transporter = nodemailer.createTransport({
 });
 
 
-const varificationEmail = async (email)=>{
+const verificationEmail = async (email, token)=>{
      const info = await transporter.sendMail({
-    from: '"Example Team" mdjaber.dev@gmail.com', // sender address
-    to: email, // list of recipients
-    subject: "Hello", // subject line
-    html: `This is your otp ${otp}`, // HTML body
-  });
+       from: '"Example Team" <mdjaber.dev@gmail.com>', // sender address
+       to: email, // list of recipients
+       subject: "Verification Email", // subject line
+       html: `This is your token ${token}`, // HTML body
+     });
+  return info
 }
 
-module.exports = varificationEmail;
+const forgetPassEmail = async (email, token)=>{
+   const info = await transporter.sendMail({
+       from: '"Example Team" <mdjaber.dev@gmail.com>', // sender address
+       to: email, // list of recipients
+       subject: "Forget Password", // subject line
+       html: `This is your token ${token}`, // HTML body
+     });
+  return info
+}
+
+module.exports = { verificationEmail, forgetPassEmail };
