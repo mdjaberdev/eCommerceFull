@@ -76,24 +76,75 @@ const registrationController = async (req, res) => {
 };
 
 const verificationEmailController = async (req, res) => {
-  const { token } = req.params;
-  if (!token) {
-    return res.status(400).json({
+  try {
+    const { token } = req.params;
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter your token",
+      });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_ACCESS);
+    console.log(decoded);
+    await User.findByIdAndUpdate({ _id: decoded._id }, { isVerified: true });
+    return res.status(200).json({
+      success: true,
+      message: "Verified your account",
+    });
+  } catch (error) {
+    return res.status(500).json({
       success: false,
-      message: "Please enter your token",
+      message: `Internal server error: ${error.message}`,
     });
   }
+};
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET_ACCESS);
-  console.log(decoded);
-  await User.findByIdAndUpdate({ _id: decoded._id }, { isVerified: true });
-  return res.status(200).json({
-    success: true,
-    message: "Verified your account",
-  });
+const loginController = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Please fill the all feilds",
+      });
+    }
+    const existingUser = await User.findOne({ email: email });
+    if (!existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const comparePassword = bcrypt.compareSync(password, existingUser.password);
+    if (!comparePassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Password not match",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Login successfully",
+      data: {
+        _id: existingUser._id,
+        fullName: existingUser.fullName,
+        email: existingUser.email,
+        role: existingUser.role,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error: ${error.message}`,
+    });
+  }
 };
 
 module.exports = {
   registrationController,
   verificationEmailController,
+  loginController,
 };
