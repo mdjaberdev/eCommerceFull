@@ -18,17 +18,12 @@ const userSchema = new Schema({
   },
   terms: {
     type: Boolean,
-    required: true,
+    default: true,
   },
   role: {
     type: String,
-    enum: ["user", "admin"],
+    enum: ["user", "admin", "vendor"],
     default: "user",
-  },
-  status: {
-    type: String,
-    enum: ["active", "deactive"],
-    default: "active",
   },
   isVerified: {
     type: Boolean,
