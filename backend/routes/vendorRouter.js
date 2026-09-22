@@ -1,0 +1,8 @@
+const express = require("express");
+const { vendorController } = require("../controllers/vendorController");
+
+const router = express.Router();
+
+router.post("/create/product", vendorController);
+
+module.exports = router;

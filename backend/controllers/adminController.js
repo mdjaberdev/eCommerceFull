@@ -22,7 +22,10 @@ const deleteUserController = async (req, res) => {
     });
   }
 
-  res.stat
+  res.status(200).json({
+    success: true,
+    message: "User deleted"
+  })
 };
 
 module.exports = { adminController, allUserController, deleteUserController };
