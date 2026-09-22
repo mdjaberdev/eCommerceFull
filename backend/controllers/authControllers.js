@@ -131,16 +131,30 @@ const loginController = async (req, res) => {
       });
     }
 
-    return res.status(200).json({
-      success: true,
-      message: "Login successfully",
-      data: {
-        _id: existingUser._id,
-        fullName: existingUser.fullName,
-        email: existingUser.email,
-        role: existingUser.role,
-      },
-    });
+    if (comparePassword) {
+      const accessToken = jwt.sign(
+        {
+          _id: existingUser._id,
+          email: existingUser.email,
+          password: existingUser.password,
+          role: existingUser.role,
+        },
+        process.env.JWT_SECRET_ACCESS,
+        { expiresIn: "30d" },
+      );
+
+      return res.status(200).json({
+        success: true,
+        message: "Login successfully",
+        data: {
+          _id: existingUser._id,
+          fullName: existingUser.fullName,
+          email: existingUser.email,
+          role: existingUser.role,
+        },
+        accessToken: accessToken,
+      });
+    }
   } catch (error) {
     return res.status(500).json({
       success: false,
