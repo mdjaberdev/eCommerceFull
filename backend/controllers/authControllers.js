@@ -1,11 +1,15 @@
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const User = require("../models/userSchema");
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { verificationEmail } = require("../utils/emailSender");
+const {
+  verificationEmail,
+  forgetPasswordEmail,
+} = require("../utils/emailSender");
 
+// REGISTRATION
 const registrationController = async (req, res) => {
   try {
     const { fullName, email, password, confirmPassword, terms } = req.body;
@@ -75,6 +79,7 @@ const registrationController = async (req, res) => {
   }
 };
 
+// VERIFICATION
 const verificationEmailController = async (req, res) => {
   try {
     const { token } = req.params;
@@ -100,6 +105,7 @@ const verificationEmailController = async (req, res) => {
   }
 };
 
+// LOGIN
 const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -143,8 +149,99 @@ const loginController = async (req, res) => {
   }
 };
 
+// FORGOTpASSWORD
+const forgotPasswordController = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter a email",
+      });
+    }
+
+    const existingUser = await User.findOne({ email: email });
+    if (!existingUser) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    const resetPasswordToken = jwt.sign(
+      {
+        _id: existingUser._id,
+        email: existingUser.email,
+        password: existingUser.password,
+      },
+      process.env.JWT_SECRET_ACCESS,
+      { expiresIn: "30d" },
+    );
+    forgetPasswordEmail(email, resetPasswordToken);
+    return res.status(200).json({
+      success: true,
+      message: "Please check your email",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error: ${error.message}`,
+    });
+  }
+};
+
+// RESETpASSWORD
+const resetPasswordController = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { newPassword, confirmPassword } = req.body;
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter your token",
+      });
+    }
+    if (!newPassword || !confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter your token",
+      });
+    }
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Confirm password not match",
+      });
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_ACCESS);
+    const hashPassword = bcrypt.hashSync(newPassword, decoded.password);
+    console.log(decoded);
+    await User.findByIdAndUpdate(
+      { _id: decoded._id },
+      { password: hashPassword },
+    );
+
+    if (!decoded || !decoded._id) {
+      return res.status(400).json({
+        success: false,
+        message: "Your token or id not match",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "Password updated",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error: ${error.message}`,
+    });
+  }
+};
+
 module.exports = {
   registrationController,
   verificationEmailController,
   loginController,
+  forgotPasswordController,
+  resetPasswordController,
 };
