@@ -77,7 +77,10 @@ const deActiveUserController = async (req, res) => {
 const updateUserController = async (req, res) => {
 
     const {id} = req.params 
-    const updateUser = await User.findByIdAndUpdate({_id: id}, req.body, {new: true})
+    const {password , ...updateData} = req.body
+    const updateUser = await User.findByIdAndUpdate({ _id: id }, updateData, {
+      new: true,
+    }).select("-password");
      return res.status(200).json({
        success: true,
        message: "User updated"
