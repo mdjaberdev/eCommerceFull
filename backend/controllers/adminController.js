@@ -4,12 +4,19 @@ const adminController = async (req, res) => {
 };
 
 const allUserController = async (req, res) => {
-  const users = await User.find({}).select("-password");
-  res.status(200).json({
-    success: true,
-    message: `${users.length} users found`,
-    data: users,
-  });
+  try {
+    const users = await User.find({}).select("-password");
+    res.status(200).json({
+      success: true,
+      message: `${users.length} users found`,
+      data: users,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error: ${error.message}`,
+    });
+  }
 };
 
 const deleteUserController = async (req, res) => {
@@ -55,38 +62,58 @@ const singleUserController = async (req, res) => {
 };
 
 const activeUserController = async (req, res) => {
-  const activeUser = await User.find({ stattus: "active" }).select("-password");
-  return res.status(200).json({
-    success: true,
-    message: "Active user info",
-    data: activeUser,
-  });
+  try {
+    const activeUser = await User.find({ status: "active" }).select(
+      "-password",
+    );
+    return res.status(200).json({
+      success: true,
+      message: "Active user info",
+      data: activeUser,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error: ${error.message}`,
+    });
+  }
 };
 const deActiveUserController = async (req, res) => {
-  const deactiveUser = await User.find({ stattus: "deactive" }).select(
-    "-password",
-  );
-  return res.status(200).json({
-    success: true,
-    message: "Deactive user info",
-    data: deactiveUser,
-  });
+  try {
+    const deactiveUser = await User.find({ status: "deactive" }).select(
+      "-password",
+    );
+    return res.status(200).json({
+      success: true,
+      message: "Deactive user info",
+      data: deactiveUser,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error: ${error.message}`,
+    });
+  }
 };
 
-
 const updateUserController = async (req, res) => {
-
-    const {id} = req.params 
-    const {password , ...updateData} = req.body
+  try {
+    const { id } = req.params;
+    const { password, ...updateData } = req.body;
     const updateUser = await User.findByIdAndUpdate({ _id: id }, updateData, {
       new: true,
     }).select("-password");
-     return res.status(200).json({
-       success: true,
-       message: "User updated"
-     });
-    
-}
+    return res.status(200).json({
+      success: true,
+      message: "User updated",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error: ${error.message}`,
+    });
+  }
+};
 
 module.exports = {
   adminController,

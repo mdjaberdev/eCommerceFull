@@ -2,7 +2,7 @@ require("node:dns").setServers(["1.1.1.1"], ["8.8.8.8"]);
 require("dotenv").config();
 const express = require("express");
 const dbConnection = require("./config/dbConnection");
-const router = require("./routes/authRouter");
+const authRouter = require("./routes/authRouter");
 const userRouter = require("./routes/userRouter");
 const adminRouter = require("./routes/adminRouter");
 const vendorRouter = require("./routes/vendorRouter");
@@ -12,7 +12,7 @@ dbConnection();
 
 app.use(express.json());
 
-app.use("/api/v1/auth", router);
+app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/user", userMiddleware, userRouter);
 app.use("/api/v1/admin",adminMiddleware, adminRouter);
 app.use("/api/v1/vendor", vendorMiddleware, vendorRouter);
