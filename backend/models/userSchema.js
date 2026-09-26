@@ -25,10 +25,10 @@ const userSchema = new Schema({
     enum: ["user", "admin", "vendor"],
     default: "user",
   },
-  stattus:{
-type: String,
-enum: ["active", "deactive"],
-default: "deactive"
+  status: {
+    type: String,
+    enum: ["active", "deactive"],
+    default: "deactive",
   },
   isVerified: {
     type: Boolean,
