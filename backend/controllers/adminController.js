@@ -41,7 +41,22 @@ const deleteUserController = async (req, res) => {
   }
 };
 
-
+const singleUserController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const singleUser = await User.findOne({ _id: id }).select("-password");
+    return res.status(200).json({
+      success: true,
+      message: "User info",
+      data: singleUser,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error: ${error.message}`,
+    });
+  }
+};
 
 const activeUserController = async (req, res) => {
   try {
