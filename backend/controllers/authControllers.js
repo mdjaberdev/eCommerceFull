@@ -123,6 +123,13 @@ const loginController = async (req, res) => {
       });
     }
 
+    if(!existingUser.isVerified){
+      return res.status(403).json({
+        success: false,
+        message: "Account not verified for work please verify your account",
+      });
+    }
+
     const comparePassword = bcrypt.compareSync(password, existingUser.password);
     if (!comparePassword) {
       return res.status(400).json({
