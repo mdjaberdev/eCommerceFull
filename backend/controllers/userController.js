@@ -99,7 +99,8 @@ try {
   });
 }
 };
-1
+
+
 const categoryDeleteController = async (req, res) => {
  try {
    const { id } = req.params;
