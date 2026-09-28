@@ -1,7 +1,4 @@
 const User = require("../models/userSchema");
-const adminController = async (req, res) => {
-  res.send("Hello admin");
-};
 
 const allUserController = async (req, res) => {
   try {
@@ -116,7 +113,6 @@ const updateUserController = async (req, res) => {
 };
 
 module.exports = {
-  adminController,
   allUserController,
   deleteUserController,
   singleUserController,

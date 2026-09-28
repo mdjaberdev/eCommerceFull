@@ -1,9 +1,8 @@
 const express = require("express");
-const { adminController, allUserController, deleteUserController, singleUserController, activeUserController, deActiveUserController, updateUserController } = require("../controllers/adminController");
+const { allUserController, deleteUserController, singleUserController, activeUserController, deActiveUserController, updateUserController } = require("../controllers/adminController");
 
 const router = express.Router();
 
-router.post("/delete/vendor", adminController);
 router.get("/all-users", allUserController);
 router.delete("/deleteuser/:id", deleteUserController);
 router.get("/singleuser/:id", singleUserController);

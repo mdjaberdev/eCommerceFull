@@ -3,9 +3,6 @@ const User = require("../models/userSchema");
 const Category = require("../models/categorySchema");
 const { categoryCreateEmail, categoryUpdateEmail, categoryDeleteEmail } = require("../utils/emailSender");
 
-const userController = async (req, res) => {
-  res.send("Hello users");
-};
 
 const createCategoryController = async (req, res) => {
   try {
@@ -126,7 +123,6 @@ const categoryDeleteController = async (req, res) => {
 };
 
 module.exports = {
-  userController,
   updateOwnProfileController,
   createCategoryController,
   allCategoryController,
