@@ -1,13 +1,14 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/userSchema");
 const Category = require("../models/categorySchema");
+const subCategory = require("../models/subCategorySchema");
 const {
   categoryCreateEmail,
   categoryUpdateEmail,
   categoryDeleteEmail,
 } = require("../utils/emailSender");
 
-
+// CATEGORY
 const createCategoryController = async (req, res) => {
   try {
     const { name } = req.body;
@@ -126,10 +127,59 @@ const categoryDeleteController = async (req, res) => {
   }
 };
 
+// SUBCATEGORY
+
+const subCategoryCreateController = async (req, res) => {
+  try {
+    const { name , parentcategory} = req.body;
+    if (!name) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter a subCategory",
+      });
+    }
+    const existingSubCategory = await subCategory.findOne({
+      name: name.toLowerCase(),
+    });
+
+    if (existingSubCategory) {
+      return res.status(400).json({
+        success: false,
+        message: "This Subcategory already exist",
+      });
+    }
+
+    const saveSubCategory = new subCategory({
+      name: name.toLowerCase(),
+      parentcategory,
+    });
+
+    await saveSubCategory.save()
+
+     return res.status(201).json({
+       success: true,
+       message: "Created Subcategory",
+     });
+
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error : ${error.message}`,
+    });
+  }
+};
+
+const allSubCategoryController = async (req, res) => {
+  
+}
+
 module.exports = {
   updateOwnProfileController,
   createCategoryController,
   allCategoryController,
   categoryUpdateController,
   categoryDeleteController,
+  subCategoryCreateController,
+  allSubCategoryController,
 };
