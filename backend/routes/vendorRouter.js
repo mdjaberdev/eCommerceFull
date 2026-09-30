@@ -9,6 +9,7 @@ const {
   subCategoryCreateController,
   allSubCategoryController,
   allCategorywiseSubCategoryController,
+  allOwnerwiseCategoryController,
 } = require("../controllers/vendorController");
 
 const router = express.Router();
@@ -19,6 +20,7 @@ router.post("/updateownprofile", updateOwnProfileController);
 router.get("/allcategory", allCategoryController);
 router.post("/categoryupdate/:id", categoryUpdateController);
 router.delete("/categorydelete/:id", categoryDeleteController);
+router.get("/allownerwisecategory/:id", allOwnerwiseCategoryController);
 
 // SUBCATEGORY
 router.post("/subcategorycreate", subCategoryCreateController);

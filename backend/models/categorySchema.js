@@ -6,13 +6,17 @@ const categorySchema = new Schema({
   name: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   status: {
     type: String,
     enum: ["active", "deactive", "reject"],
-    default: "deactive"
-  }
+    default: "deactive",
+  },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+  },
 });
 
 module.exports = mongoose.model("Category", categorySchema);

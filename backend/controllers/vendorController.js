@@ -11,7 +11,7 @@ const {
 // CATEGORY
 const createCategoryController = async (req, res) => {
   try {
-    const { name } = req.body;
+    const { name, owner } = req.body;
 
     const existingName = await Category.findOne({ name: name.toLowerCase() });
     if (existingName) {
@@ -23,6 +23,7 @@ const createCategoryController = async (req, res) => {
 
     const category = new Category({
       name: name.toLowerCase(),
+      owner: owner,
     });
 
     await category.save();
@@ -64,7 +65,7 @@ const updateOwnProfileController = async (req, res) => {
 
 const allCategoryController = async (req, res) => {
   try {
-    const allCategory = await Category.find({});
+    const allCategory = await Category.find({}).populate("owner");
     return res.status(200).json({
       success: true,
       message: "All category",
@@ -131,7 +132,7 @@ const categoryDeleteController = async (req, res) => {
 
 const subCategoryCreateController = async (req, res) => {
   try {
-    const { name , parentcategory} = req.body;
+    const { name, parentcategory } = req.body;
     if (!name) {
       return res.status(400).json({
         success: false,
@@ -154,14 +155,12 @@ const subCategoryCreateController = async (req, res) => {
       parentcategory,
     });
 
-    await saveSubCategory.save()
+    await saveSubCategory.save();
 
-     return res.status(201).json({
-       success: true,
-       message: "Created Subcategory",
-     });
-
-
+    return res.status(201).json({
+      success: true,
+      message: "Created Subcategory",
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -171,33 +170,43 @@ const subCategoryCreateController = async (req, res) => {
 };
 
 const allSubCategoryController = async (req, res) => {
-  const allSubCategory = await subCategory.find({}).populate("parentcategory")
+  const allSubCategory = await subCategory.find({}).populate("parentcategory");
 
-  if (!allSubCategory){
+  if (!allSubCategory) {
     return res.status(404).json({
       success: false,
       message: "Subcategory not found",
-   
     });
   }
-    return res.status(200).json({
-      success: true,
-      message: "All Subcategory",
-      data: allSubCategory,
-    });
-}
+  return res.status(200).json({
+    success: true,
+    message: "All Subcategory",
+    data: allSubCategory,
+  });
+};
 
 const allCategorywiseSubCategoryController = async (req, res) => {
-    const { id} = req.params
-    const allCategorywiseSubCategory = await subCategory.find({parentcategory: id})
+  const { id } = req.params;
+  const allCategorywiseSubCategory = await subCategory.find({
+    parentcategory: id,
+  });
 
+  return res.status(200).json({
+    success: true,
+    message: "All Category wise Subcategory",
+    data: allCategorywiseSubCategory,
+  });
+};
 
-    return res.status(200).json({
-      success: true,
-      message: "All Category wise Subcategory",
-      data: allCategorywiseSubCategory,
-    });
-}
+const allOwnerwiseCategoryController = async (req, res) => {
+  const { id } = req.params;
+  const allOwnerwisecategory = await Category.find({ owner: id });
+  return res.status(200).json({
+    success: true,
+    message: "All Owner wise Category",
+    data: allOwnerwisecategory,
+  });
+};
 
 module.exports = {
   updateOwnProfileController,
@@ -208,4 +217,5 @@ module.exports = {
   subCategoryCreateController,
   allSubCategoryController,
   allCategorywiseSubCategoryController,
+  allOwnerwiseCategoryController,
 };
