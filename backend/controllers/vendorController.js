@@ -171,7 +171,32 @@ const subCategoryCreateController = async (req, res) => {
 };
 
 const allSubCategoryController = async (req, res) => {
-  
+  const allSubCategory = await subCategory.find({}).populate("parentcategory")
+
+  if (!allSubCategory){
+    return res.status(404).json({
+      success: false,
+      message: "Subcategory not found",
+   
+    });
+  }
+    return res.status(200).json({
+      success: true,
+      message: "All Subcategory",
+      data: allSubCategory,
+    });
+}
+
+const allCategorywiseSubCategoryController = async (req, res) => {
+    const { id} = req.params
+    const allCategorywiseSubCategory = await subCategory.find({parentcategory: id})
+
+
+    return res.status(200).json({
+      success: true,
+      message: "All Category wise Subcategory",
+      data: allCategorywiseSubCategory,
+    });
 }
 
 module.exports = {
@@ -182,4 +207,5 @@ module.exports = {
   categoryDeleteController,
   subCategoryCreateController,
   allSubCategoryController,
+  allCategorywiseSubCategoryController,
 };

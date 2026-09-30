@@ -8,6 +8,7 @@ const {
   categoryDeleteController,
   subCategoryCreateController,
   allSubCategoryController,
+  allCategorywiseSubCategoryController,
 } = require("../controllers/vendorController");
 
 const router = express.Router();
@@ -21,6 +22,7 @@ router.delete("/categorydelete/:id", categoryDeleteController);
 
 // SUBCATEGORY
 router.post("/subcategorycreate", subCategoryCreateController);
-router.get("/subcategorycreate", allSubCategoryController);
+router.get("/allsubcategory", allSubCategoryController);
+router.get("/allcategorywisesubcategory/:id", allCategorywiseSubCategoryController);
 
 module.exports = router;
