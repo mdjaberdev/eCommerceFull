@@ -7,6 +7,7 @@ const {
   categoryUpdateEmail,
   categoryDeleteEmail,
 } = require("../utils/emailSender");
+const getCategoriesByOwner = require("../utils/ownerWisePromise");
 
 // CATEGORY
 const createCategoryController = async (req, res) => {
@@ -197,25 +198,30 @@ const allCategorywiseSubCategoryController = async (req, res) => {
 };
 
 const allOwnerwiseCategoryController = async (req, res) => {
-  const { id } = req.params;
-  const allOwnerwisecategory = await Category.find({ owner: id });
-  if (!allOwnerwisecategory){
-     return res.status(400).json({
+ try {
+   const { id } = req.params;
+
+   const allOwnerwisecategory = await getCategoriesByOwner(id);
+
+   if (!allOwnerwisecategory || allOwnerwisecategory.length === 0) {
+     return res.status(404).json({
        success: false,
-       message: "All Owner wise Category not found",
+       message: "No categories found for this owner",
      });
+   }
 
-  }
-    return res.status(200).json({
-      success: true,
-      message: "All Owner wise Category",
-      data: allOwnerwisecategory,
-    });
-
-  
+   return res.status(200).json({
+     success: true,
+     message: "All Owner wise Categories fetched successfully",
+     data: allOwnerwisecategory,
+   });
+ } catch (error) {
+   return res.status(500).json({
+     success: false,
+     message: `Internal server error : ${error.message}`,
+   });
+ }
 };
-
-
 
 module.exports = {
   updateOwnProfileController,
