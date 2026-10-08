@@ -44,8 +44,6 @@ const createCategoryController = async (req, res) => {
 
 const updateOwnProfileController = async (req, res) => {
   try {
-    const authorizationToken = req.headers.authorization;
-    let token = authorizationToken.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET_ACCESS);
 
     const updateUser = await User.findByIdAndUpdate(decoded._id, req.body, {
@@ -201,12 +199,23 @@ const allCategorywiseSubCategoryController = async (req, res) => {
 const allOwnerwiseCategoryController = async (req, res) => {
   const { id } = req.params;
   const allOwnerwisecategory = await Category.find({ owner: id });
-  return res.status(200).json({
-    success: true,
-    message: "All Owner wise Category",
-    data: allOwnerwisecategory,
-  });
+  if (!allOwnerwisecategory){
+     return res.status(400).json({
+       success: false,
+       message: "All Owner wise Category not found",
+     });
+
+  }
+    return res.status(200).json({
+      success: true,
+      message: "All Owner wise Category",
+      data: allOwnerwisecategory,
+    });
+
+  
 };
+
+
 
 module.exports = {
   updateOwnProfileController,
