@@ -13,10 +13,6 @@ const categorySchema = new Schema({
     enum: ["active", "deactive", "reject"],
     default: "deactive",
   },
-  subcategory: {
-    type: Schema.Types.ObjectId,
-    ref: "SubCategory",
-  },
   owner: {
     type: Schema.Types.ObjectId,
     ref: "User",

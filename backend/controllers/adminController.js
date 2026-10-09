@@ -2,7 +2,7 @@ const User = require("../models/userSchema");
 
 const allUserController = async (req, res) => {
   try {
-    const users = await User.find({}).select("-password");
+    const users = await User.find({})
     res.status(200).json({
       success: true,
       message: `${users.length} users found`,
@@ -60,9 +60,7 @@ const singleUserController = async (req, res) => {
 
 const activeUserController = async (req, res) => {
   try {
-    const activeUser = await User.find({ status: "active" }).select(
-      "-password",
-    );
+    const activeUser = await User.find({ status: "active" })
     return res.status(200).json({
       success: true,
       message: "Active user info",
@@ -77,9 +75,7 @@ const activeUserController = async (req, res) => {
 };
 const deActiveUserController = async (req, res) => {
   try {
-    const deactiveUser = await User.find({ status: "deactive" }).select(
-      "-password",
-    );
+    const deactiveUser = await User.find({ status: "deactive" })
     return res.status(200).json({
       success: true,
       message: "Deactive user info",
@@ -99,7 +95,7 @@ const updateUserController = async (req, res) => {
     const { password, ...updateData } = req.body;
     const updateUser = await User.findByIdAndUpdate({ _id: id }, updateData, {
       new: true,
-    }).select("-password");
+    })
     return res.status(200).json({
       success: true,
       message: "User updated",

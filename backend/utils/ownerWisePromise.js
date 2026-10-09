@@ -6,13 +6,13 @@ const getCategoriesByOwner = async (id) => {
     const categories = await Category.find({ owner: id })
       .populate("owner")
       .lean();
-
+   
     const categoriesWithSubcategories = await Promise.all(
-      categories.map(async (category) => {
+      categories.map(async (item) => {
         const subcategories = await SubCategory.find({
-          parentcategory: category._id,
+          parentcategory: item._id,
         });
-        return { ...category, subCategory: subcategories };
+        return { ...item, subCategory: subcategories };
       }),
     );
 
