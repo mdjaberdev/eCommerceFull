@@ -1,12 +1,12 @@
 const Category = require("../models/categorySchema");
 const SubCategory = require("../models/subCategorySchema");
 
-const getCategoriesByOwner = async (id) => {
+const ownerWiseCategoryHelperFun = async (id) => {
   try {
     const categories = await Category.find({ owner: id })
       .populate("owner")
       .lean();
-   
+
     const categoriesWithSubcategories = await Promise.all(
       categories.map(async (item) => {
         const subcategories = await SubCategory.find({
@@ -23,4 +23,4 @@ const getCategoriesByOwner = async (id) => {
   }
 };
 
-module.exports = getCategoriesByOwner;
+module.exports = ownerWiseCategoryHelperFun;

@@ -7,7 +7,7 @@ const {
   categoryUpdateEmail,
   categoryDeleteEmail,
 } = require("../utils/emailSender");
-const getCategoriesByOwner = require("../utils/ownerWisePromise");
+const ownerWiseCategoryHelperFun = require("../utils/ownerWiseCategoryHelperFun")
 
 // CATEGORY
 const createCategoryController = async (req, res) => {
@@ -217,7 +217,7 @@ const allOwnerwiseCategoryController = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const allOwnerwisecategory = await getCategoriesByOwner(id);
+    const allOwnerwisecategory = await ownerWiseCategoryHelperFun(id);
 
     if (!allOwnerwisecategory || allOwnerwisecategory.length === 0) {
       return res.status(404).json({
