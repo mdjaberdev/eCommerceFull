@@ -169,58 +169,74 @@ const subCategoryCreateController = async (req, res) => {
 };
 
 const allSubCategoryController = async (req, res) => {
-  const allSubCategory = await subCategory.find({}).populate("parentcategory");
+  try {
+    const allSubCategory = await subCategory
+      .find({})
+      .populate("parentcategory");
 
-  if (!allSubCategory) {
-    return res.status(404).json({
+    if (!allSubCategory) {
+      return res.status(404).json({
+        success: false,
+        message: "Subcategory not found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: "All Subcategory",
+      data: allSubCategory,
+    });
+  } catch (error) {
+    return res.status(500).json({
       success: false,
-      message: "Subcategory not found",
+      message: `Internal server error : ${error.message}`,
     });
   }
-  return res.status(200).json({
-    success: true,
-    message: "All Subcategory",
-    data: allSubCategory,
-  });
 };
 
 const allCategorywiseSubCategoryController = async (req, res) => {
-  const { id } = req.params;
-  const allCategorywiseSubCategory = await subCategory.find({
-    parentcategory: id,
-  });
+  try {
+    const { id } = req.params;
+    const allCategorywiseSubCategory = await subCategory.find({
+      parentcategory: id,
+    });
 
-  return res.status(200).json({
-    success: true,
-    message: "All Category wise Subcategory",
-    data: allCategorywiseSubCategory,
-  });
+    return res.status(200).json({
+      success: true,
+      message: "All Category wise Subcategory",
+      data: allCategorywiseSubCategory,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error : ${error.message}`,
+    });
+  }
 };
 
 const allOwnerwiseCategoryController = async (req, res) => {
- try {
-   const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-   const allOwnerwisecategory = await getCategoriesByOwner(id);
+    const allOwnerwisecategory = await getCategoriesByOwner(id);
 
-   if (!allOwnerwisecategory || allOwnerwisecategory.length === 0) {
-     return res.status(404).json({
-       success: false,
-       message: "No categories found for this owner",
-     });
-   }
+    if (!allOwnerwisecategory || allOwnerwisecategory.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No categories found for this owner",
+      });
+    }
 
-   return res.status(200).json({
-     success: true,
-     message: "All Owner wise Categories",
-     data: allOwnerwisecategory,
-   });
- } catch (error) {
-   return res.status(500).json({
-     success: false,
-     message: `Internal server error : ${error.message}`,
-   });
- }
+    return res.status(200).json({
+      success: true,
+      message: "All Owner wise Categories",
+      data: allOwnerwisecategory,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error : ${error.message}`,
+    });
+  }
 };
 
 module.exports = {
