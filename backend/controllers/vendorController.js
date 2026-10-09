@@ -212,7 +212,7 @@ const allOwnerwiseCategoryController = async (req, res) => {
 
    return res.status(200).json({
      success: true,
-     message: "All Owner wise Categories fetched successfully",
+     message: "All Owner wise Categories",
      data: allOwnerwisecategory,
    });
  } catch (error) {
