@@ -10,7 +10,18 @@ const createProductController = async (req, res) => {
       discountPrice,
       categoryId,
       subCategoryId,
+      ownerId,
+      isMain
     } = req.body;
+    const images = [];
+    req.files.map((item, index) => {
+      images.push({
+        url:item.path,
+        isMain: index == isMain ? true : false
+      });
+    });
+    console.log(images);
+    
 
     const slug = title.toLowerCase().split(" ").join("-");
     const existingSlug = await Product.findOne({ slug: slug });
@@ -35,19 +46,21 @@ const createProductController = async (req, res) => {
       shortDescription: shortDescription,
       price: price,
       discountPrice: discountPrice,
-      categoryId: categoryId,
-      subCategoryId: subCategoryId,
+      category: categoryId,
+      subCategory: subCategoryId,
+      owner: ownerId,
       slug: slug,
-      sku: sku
+      sku: sku,
+      images: images,
     });
+
     await product.save();
 
- return res.status(201).json({
-   success: true,
-   message: "Product created",
-   product: product,
- });
-
+    return res.status(201).json({
+      success: true,
+      message: "Product created",
+      product: product,
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
