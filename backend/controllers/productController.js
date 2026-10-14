@@ -1,5 +1,6 @@
 const Product = require("../models/productSchema");
 
+// CREATE PRODUCT
 const createProductController = async (req, res) => {
   try {
     const {
@@ -11,17 +12,17 @@ const createProductController = async (req, res) => {
       categoryId,
       subCategoryId,
       ownerId,
-      isMain
+      isMain,
     } = req.body;
+
+    //   IMAGES
     const images = [];
     req.files.map((item, index) => {
       images.push({
-        url:item.path,
-        isMain: index == isMain ? true : false
+        url: item.path,
+        isMain: index == isMain ? true : false,
       });
     });
-    console.log(images);
-    
 
     const slug = title.toLowerCase().split(" ").join("-");
     const existingSlug = await Product.findOne({ slug: slug });
@@ -64,9 +65,28 @@ const createProductController = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: `Internal server error : ${error}`,
+      message: `Internal server error : ${error.message}`,
     });
   }
 };
 
-module.exports = { createProductController };
+// ALL PRODUCT
+
+const getAllProductController = async (req, res) => {
+  try {
+    const allProduct = await Product.find({}).populate(["category", "subCategory", "owner"]);
+    return res.status(200).json({
+      success: true,
+      message: "All product",
+      count: allProduct.length,
+      allProduct: allProduct,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error : ${error.message}`,
+    });
+  }
+};
+
+module.exports = { createProductController, getAllProductController };
