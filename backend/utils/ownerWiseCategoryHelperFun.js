@@ -8,13 +8,14 @@ const ownerWiseCategoryHelperFun = async (id) => {
       .lean();
 
     const categoriesWithSubcategories = await Promise.all(
-      categories.map(async (item) => {
+      categories.map(async (category) => {
         const subcategories = await SubCategory.find({
-          parentcategory: item._id,
+          parentcategory: category._id,
         });
-        return { ...item, subCategory: subcategories };
+        return { ...category, subCategory: subcategories };
       }),
     );
+    
 
     return categoriesWithSubcategories;
   } catch (error) {

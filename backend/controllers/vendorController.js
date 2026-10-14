@@ -225,7 +225,6 @@ const allOwnerwiseCategoryController = async (req, res) => {
         message: "No categories found for this owner",
       });
     }
-
     return res.status(200).json({
       success: true,
       message: "All Owner wise Categories",

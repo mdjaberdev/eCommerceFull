@@ -26,4 +26,9 @@ router.get("/allownerwisecategory/:id", allOwnerwiseCategoryController);
 router.post("/subcategorycreate", subCategoryCreateController);
 router.get("/allsubcategory", allSubCategoryController);
 router.get("/allcategorywisesubcategory/:id", allCategorywiseSubCategoryController);
+
+
+// PRODUCT 
+router.post("/createproduct", )
+
 module.exports = router;
