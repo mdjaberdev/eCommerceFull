@@ -52,6 +52,18 @@ const productSchema = new Schema(
       enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
+    category: {
+      type: Schema.Types.ObjectId,
+      ref: "Category",
+    },
+    subCategory: {
+      type: Schema.Types.ObjectId,
+      ref: "SubCategory",
+    },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   { timestamps: true },
 );

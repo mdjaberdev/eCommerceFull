@@ -11,6 +11,7 @@ const {
   allCategorywiseSubCategoryController,
   allOwnerwiseCategoryController,
 } = require("../controllers/vendorController");
+const { createProductController } = require("../controllers/productController");
 
 const router = express.Router();
 
@@ -29,6 +30,6 @@ router.get("/allcategorywisesubcategory/:id", allCategorywiseSubCategoryControll
 
 
 // PRODUCT 
-router.post("/createproduct", )
+router.post("/createproduct", createProductController);
 
 module.exports = router;
