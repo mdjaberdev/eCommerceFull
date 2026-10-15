@@ -11,7 +11,7 @@ const {
   allCategorywiseSubCategoryController,
   allOwnerwiseCategoryController,
 } = require("../controllers/vendorController");
-const { createProductController, getAllProductController, categoryWiseProductController } = require("../controllers/productController");
+const { createProductController, getAllProductController, categoryWiseProductController, subCategoryWiseProductController, ownerWiseProductController, deleteProductController } = require("../controllers/productController");
 const upload = require("../utils/multerStorage")
 
 const router = express.Router();
@@ -34,5 +34,8 @@ router.get("/allcategorywisesubcategory/:id", allCategorywiseSubCategoryControll
 router.post("/createproduct", upload.array("photo"), createProductController);
 router.get("/getallproduct", getAllProductController);
 router.get("/categorywiseproduct/:id", categoryWiseProductController);
+router.get("/subcategorywiseproduct/:id", subCategoryWiseProductController);
+router.get("/ownerwiseproduct/:id", ownerWiseProductController);
+router.delete("/deleteproduct/:id", deleteProductController);
 
 module.exports = router;

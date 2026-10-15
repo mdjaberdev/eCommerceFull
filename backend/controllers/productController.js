@@ -15,6 +15,23 @@ const createProductController = async (req, res) => {
       isMain,
     } = req.body;
 
+    if (
+      !title ||
+      !description ||
+      !shortDescription ||
+      !price ||
+      !discountPrice ||
+      !categoryId ||
+      !subCategoryId ||
+      !ownerId ||
+      !isMain
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Please fill the all fields",
+      });
+    }
+
     //   IMAGES
     const images = [];
     req.files.map((item, index) => {
@@ -33,13 +50,13 @@ const createProductController = async (req, res) => {
       });
     }
     const sku = `eco-${Date.now()}`;
-    const existingSku = await Product.findOne({ sku: sku });
-    if (existingSku) {
-      return res.status(400).json({
-        success: false,
-        message: "Sku already exists",
-      });
-    }
+    // const existingSku = await Product.findOne({ sku: sku });
+    // if (existingSku) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Sku already exists",
+    //   });
+    // }
 
     const product = new Product({
       title: title,
@@ -93,18 +110,23 @@ const getAllProductController = async (req, res) => {
   }
 };
 
+// CATEGORY WISE PRODUCT
 const categoryWiseProductController = async (req, res) => {
   try {
     const { id } = req.params;
-    const categoryWisePro = await Product.find({ category: id });
+    const categoryWisePro = await Product.find({ category: id }).populate([
+      "category",
+      "subCategory",
+      "owner",
+    ]);
 
-     if (!categoryWisePro || categoryWisePro.length == 0) {
-       return res.status(404).json({
-         success: false,
-         message: "Product not found",
-       });
-     }
-   
+    if (!categoryWisePro || categoryWisePro.length == 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
     return res.status(200).json({
       success: true,
       message: `${categoryWisePro.length} Category wise Product`,
@@ -118,8 +140,39 @@ const categoryWiseProductController = async (req, res) => {
   }
 };
 
+// SUBCATEGORY WISE PRODUCT
+const subCategoryWiseProductController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const subCategoryWisePro = await Product.find({ subCategory: id });
+
+    if (!subCategoryWisePro || subCategoryWisePro.length == 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `${subCategoryWisePro.length} SubCategory wise Product`,
+      subCategoryWisePro: subCategoryWisePro,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error : ${error.message}`,
+    });
+  }
+};
+
+// OWNER WISE PRODUCT
+
 module.exports = {
   createProductController,
   getAllProductController,
   categoryWiseProductController,
+  subCategoryWiseProductController,
+  ownerWiseProductController,
+  deleteProductController,
 };
