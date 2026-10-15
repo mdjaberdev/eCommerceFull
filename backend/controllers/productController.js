@@ -167,6 +167,33 @@ const subCategoryWiseProductController = async (req, res) => {
 };
 
 // OWNER WISE PRODUCT
+const ownerWiseProductController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const ownerWisePro = await Product.find({ owner: id });
+
+    if (!ownerWisePro || ownerWisePro.length == 0) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `${ownerWisePro.length} Owner wise Product`,
+      ownerWisePro: ownerWisePro,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error : ${error.message}`,
+    });
+  }
+};
+
+// DELETE PRODUCT
+
 
 module.exports = {
   createProductController,
