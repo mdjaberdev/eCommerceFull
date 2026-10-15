@@ -193,7 +193,29 @@ const ownerWiseProductController = async (req, res) => {
 };
 
 // DELETE PRODUCT
+const deleteProductController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletepro = await Product.findByIdAndDelete(id);
 
+    if (!deletepro) {
+      return res.status(400).json({
+        success: false,
+        message: "Product already deleted",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Product Deleted",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error : ${error.message}`,
+    });
+  }
+};
 
 module.exports = {
   createProductController,
