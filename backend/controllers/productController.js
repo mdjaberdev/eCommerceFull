@@ -74,7 +74,11 @@ const createProductController = async (req, res) => {
 
 const getAllProductController = async (req, res) => {
   try {
-    const allProduct = await Product.find({}).populate(["category", "subCategory", "owner"]);
+    const allProduct = await Product.find({}).populate([
+      "category",
+      "subCategory",
+      "owner",
+    ]);
     return res.status(200).json({
       success: true,
       message: "All product",
@@ -89,4 +93,33 @@ const getAllProductController = async (req, res) => {
   }
 };
 
-module.exports = { createProductController, getAllProductController };
+const categoryWiseProductController = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const categoryWisePro = await Product.find({ category: id });
+
+     if (!categoryWisePro || categoryWisePro.length == 0) {
+       return res.status(404).json({
+         success: false,
+         message: "Product not found",
+       });
+     }
+   
+    return res.status(200).json({
+      success: true,
+      message: `${categoryWisePro.length} Category wise Product`,
+      categoryWisePro: categoryWisePro,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error : ${error.message}`,
+    });
+  }
+};
+
+module.exports = {
+  createProductController,
+  getAllProductController,
+  categoryWiseProductController,
+};
