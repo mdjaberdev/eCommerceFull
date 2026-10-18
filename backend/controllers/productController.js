@@ -156,7 +156,8 @@ const subCategoryWiseProductController = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: `${subCategoryWisePro.length} SubCategory wise Product`,
+      message: `SubCategory wise Product`,
+      count: subCategoryWisePro.length,
       subCategoryWisePro: subCategoryWisePro,
     });
   } catch (error) {
@@ -182,7 +183,8 @@ const ownerWiseProductController = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: `${ownerWisePro.length} Owner wise Product`,
+      message: `Owner wise Product`,
+      count: ownerWisePro.length,
       ownerWisePro: ownerWisePro,
     });
   } catch (error) {
