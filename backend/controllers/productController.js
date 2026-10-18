@@ -129,7 +129,8 @@ const categoryWiseProductController = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: `${categoryWisePro.length} Category wise Product`,
+      message: `Category wise Product`,
+      count: categoryWisePro.length,
       categoryWisePro: categoryWisePro,
     });
   } catch (error) {
