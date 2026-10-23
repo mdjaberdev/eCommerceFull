@@ -6,8 +6,8 @@ const productSchema = new Schema(
   {
     title: {
       type: String,
-      required: true,
-      unique: true,
+      // required: true,
+      // unique: true,
     },
     description: {
       type: String,
@@ -18,17 +18,17 @@ const productSchema = new Schema(
 
     sku: {
       type: String,
-      required: true,
-      unique: true,
+      // required: true,
+      // unique: true,
     },
     slug: {
       type: String,
-      required: true,
-      unique: true,
+      // required: true,
+      // unique: true,
     },
     price: {
       type: Number,
-      required: true,
+      // required: true,
     },
     images: [
       {
@@ -49,7 +49,7 @@ const productSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected"],
+      enum: ["pending", "active", "rejected"],
       default: "pending",
     },
     category: {
