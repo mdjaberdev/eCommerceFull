@@ -1,4 +1,7 @@
 const Product = require("../models/productSchema");
+const schema = require("../utils/schemaForExcle");
+const { readSheet } = require("read-excel-file/node");
+
 
 // CREATE PRODUCT
 const createProductController = async (req, res) => {
@@ -220,6 +223,56 @@ const deleteProductController = async (req, res) => {
   }
 };
 
+// BULKPRODUCTUPLOAD 
+
+const bulkProductUploadController = async (req, res) => {
+  try {
+    const { objects, errors } = await readSheet(req.file.path, {
+      schema,
+    });
+
+    if (errors) {
+      return res.status(400).json({
+        success: false,
+        message: "Excel parsing error",
+        errors: errors,
+      });
+    }
+
+    const products = objects.map((product) => {
+      return {
+        ...product,
+        slug: product.slug
+          ? product.slug
+          : product.title.toLowerCase().split(" ").join("-"),
+        sku: product.sku
+          ? product.sku
+          : `eco-${product.title.substring(0, 4)}-${Date.now()}`,
+        images: [
+          {
+            url: product.images,
+            isMain: false,
+          },
+        ],
+      };
+    });
+
+    await Product.insertMany(products);
+
+    res.status(201).json({
+      success: true,
+      message: "All product upload successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: `Internal server error : ${error.message}`,
+    });
+  }
+};
+
+const exportProductsController = async (req, res) => {};
+
 module.exports = {
   createProductController,
   getAllProductController,
@@ -227,4 +280,6 @@ module.exports = {
   subCategoryWiseProductController,
   ownerWiseProductController,
   deleteProductController,
+  bulkProductUploadController,
+  exportProductsController,
 };
