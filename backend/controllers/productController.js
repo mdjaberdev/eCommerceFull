@@ -202,25 +202,21 @@ const updateProductController = async (req, res) => {
   const { id } = req.params;
 
   const existingPro = await Product.findOne({ _id: id });
-  if (!existingPro){
+  if (!existingPro) {
     return res.status(400).json({
       success: false,
-      message: "Please create a product"
-    })
+      message: "Please create a product",
+    });
   }
-    if (req.body.isMain) {
-      // const updatePro = await Product.findByIdAndUpdate(id, req.body, {
-      //   new: true,
-      // });
-
-      existingPro.images.map((item) => {
-        item.isMain = false;
-      });
-      existingPro.images[req.body.isMain].isMain = true;
-    }
+  if (req.body.isMain) {
+    existingPro.images.map((item) => {
+      item.isMain = false;
+    });
+    existingPro.images[req.body.isMain].isMain = true;
+  }
 
   if (req.body.deleteImage) {
-    console.log(existingPro.images[req.body.deleteImage].isMain);
+    // console.log(existingPro.images[req.body.deleteImage].isMain);
     existingPro.images[0].isMain = true;
     existingPro.images.splice(req.body.deleteImage, 1);
   }
