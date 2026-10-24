@@ -2,7 +2,6 @@ const Product = require("../models/productSchema");
 const schema = require("../utils/schemaForExcle");
 const { readSheet } = require("read-excel-file/node");
 
-
 // CREATE PRODUCT
 const createProductController = async (req, res) => {
   try {
@@ -12,28 +11,28 @@ const createProductController = async (req, res) => {
       shortDescription,
       price,
       discountPrice,
-      categoryId,
-      subCategoryId,
-      ownerId,
+      category,
+      subCategory,
+      owner,
       isMain,
     } = req.body;
 
-    if (
-      !title ||
-      !description ||
-      !shortDescription ||
-      !price ||
-      !discountPrice ||
-      !categoryId ||
-      !subCategoryId ||
-      !ownerId ||
-      !isMain
-    ) {
-      return res.status(400).json({
-        success: false,
-        message: "Please fill the all fields",
-      });
-    }
+    // if (
+    //   !title ||
+    //   !description ||
+    //   !shortDescription ||
+    //   !price ||
+    //   !discountPrice ||
+    //   !category ||
+    //   !subCategory ||
+    //   !owner ||
+    //   !isMain
+    // ) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Please fill the all fields",
+    //   });
+    // }
 
     //   IMAGES
     const images = [];
@@ -67,9 +66,9 @@ const createProductController = async (req, res) => {
       shortDescription: shortDescription,
       price: price,
       discountPrice: discountPrice,
-      category: categoryId,
-      subCategory: subCategoryId,
-      owner: ownerId,
+      category: category,
+      subCategory: subCategory,
+      owner: owner,
       slug: slug,
       sku: sku,
       images: images,
@@ -198,6 +197,40 @@ const ownerWiseProductController = async (req, res) => {
   }
 };
 
+// UPDATEPRODUCT
+const updateProductController = async (req, res) => {
+  const { id } = req.params;
+
+  const existingPro = await Product.findOne({ _id: id });
+  if (!existingPro){
+    return res.status(400).json({
+      success: false,
+      message: "Please create a product"
+    })
+  }
+    if (req.body.isMain) {
+      // const updatePro = await Product.findByIdAndUpdate(id, req.body, {
+      //   new: true,
+      // });
+
+      existingPro.images.map((item) => {
+        item.isMain = false;
+      });
+      existingPro.images[req.body.isMain].isMain = true;
+    }
+
+  if (req.body.deleteImage) {
+    console.log(existingPro.images[req.body.deleteImage].isMain);
+    existingPro.images[0].isMain = true;
+    existingPro.images.splice(req.body.deleteImage, 1);
+  }
+  existingPro.save();
+  res.status(200).json({
+    success: true,
+    message: "Product updated",
+  });
+};
+
 // DELETE PRODUCT
 const deleteProductController = async (req, res) => {
   try {
@@ -223,7 +256,7 @@ const deleteProductController = async (req, res) => {
   }
 };
 
-// BULKPRODUCTUPLOAD 
+// BULKPRODUCTUPLOAD
 
 const bulkProductUploadController = async (req, res) => {
   try {
@@ -279,6 +312,7 @@ module.exports = {
   categoryWiseProductController,
   subCategoryWiseProductController,
   ownerWiseProductController,
+  updateProductController,
   deleteProductController,
   bulkProductUploadController,
   exportProductsController,
