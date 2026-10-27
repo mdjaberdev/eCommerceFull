@@ -1,8 +1,9 @@
 const User = require("../models/userSchema");
+const Category = require("../models/categorySchema");
 
 const allUserController = async (req, res) => {
   try {
-    const users = await User.find({})
+    const users = await User.find({});
     res.status(200).json({
       success: true,
       message: `${users.length} users found`,
@@ -60,7 +61,7 @@ const singleUserController = async (req, res) => {
 
 const activeUserController = async (req, res) => {
   try {
-    const activeUser = await User.find({ status: "active" })
+    const activeUser = await User.find({ status: "active" });
     return res.status(200).json({
       success: true,
       message: "Active user info",
@@ -75,7 +76,7 @@ const activeUserController = async (req, res) => {
 };
 const deActiveUserController = async (req, res) => {
   try {
-    const deactiveUser = await User.find({ status: "deactive" })
+    const deactiveUser = await User.find({ status: "deactive" });
     return res.status(200).json({
       success: true,
       message: "Deactive user info",
@@ -95,7 +96,7 @@ const updateUserController = async (req, res) => {
     const { password, ...updateData } = req.body;
     const updateUser = await User.findByIdAndUpdate({ _id: id }, updateData, {
       new: true,
-    })
+    });
     return res.status(200).json({
       success: true,
       message: "User updated",
@@ -108,6 +109,21 @@ const updateUserController = async (req, res) => {
   }
 };
 
+const categoryStatusChangeController = async (req, res) => {
+  const { id } = req.params;
+  const status = req.body.status;
+  const statusCh = await Category.findByIdAndUpdate(
+    id,
+    { status: status },
+    { new: true },
+  );
+
+  return res.status(200).json({
+    success: true,
+    message: "Category status change",
+  });
+};
+
 module.exports = {
   allUserController,
   deleteUserController,
@@ -115,4 +131,5 @@ module.exports = {
   activeUserController,
   deActiveUserController,
   updateUserController,
+  categoryStatusChangeController,
 };
