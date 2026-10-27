@@ -201,13 +201,33 @@ const ownerWiseProductController = async (req, res) => {
 const updateProductController = async (req, res) => {
   const { id } = req.params;
 
+  if (req.body.sku || req.body.slug) {
+    return res.status(400).json({
+      success: false,
+      message: "You cannot change sku or slug",
+    });
+  }
+
   const existingPro = await Product.findOne({ _id: id });
+
+  const images = [...existingPro.images];
+
+  req.files.map((item) => {
+    images.push({
+      url: item.path,
+      isMain: false,
+    });
+  });
+
+  existingPro.images = images;
+
   if (!existingPro) {
     return res.status(400).json({
       success: false,
       message: "Please create a product",
     });
   }
+  await Product.findByIdAndUpdate(id, req.body, { new: true });
   if (req.body.isMain) {
     existingPro.images.map((item) => {
       item.isMain = false;

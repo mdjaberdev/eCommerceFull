@@ -36,7 +36,7 @@ router.get("/getallproduct", getAllProductController);
 router.get("/categorywiseproduct/:id", categoryWiseProductController);
 router.get("/subcategorywiseproduct/:id", subCategoryWiseProductController);
 router.get("/ownerwiseproduct/:id", ownerWiseProductController);
-router.post("/updateproduct/:id", updateProductController);
+router.post("/updateproduct/:id",upload.array("photo") ,updateProductController);
 router.delete("/deleteproduct/:id", deleteProductController);
 router.post("/bulkproductupload",upload.single('file'), bulkProductUploadController);
 router.get("/bulkproductdownload", exportProductsController);
