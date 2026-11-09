@@ -112,6 +112,25 @@ const getAllProductController = async (req, res) => {
   }
 };
 
+// Single Product
+
+const singleProductController = async (req, res) => {
+  const { slug } = req.params;
+  const existingSlug= await Product.findOne({slug})
+if(!existingSlug){
+  return res.status(404).json({
+    success: false,
+    message: "Product not found",
+  });
+}
+
+  res.status(200).json({
+    success: true,
+    message: "Single Product",
+    data: existingSlug
+  })
+};
+
 // CATEGORY WISE PRODUCT
 const categoryWiseProductController = async (req, res) => {
   try {
@@ -332,4 +351,5 @@ module.exports = {
   deleteProductController,
   bulkProductUploadController,
   exportProductsController,
+  singleProductController,
 };
