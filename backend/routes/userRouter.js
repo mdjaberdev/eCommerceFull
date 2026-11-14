@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router()
 const { singleProductController, getAllProductController } = require("../controllers/productController");
 const { allCategoryController, allSubCategoryController } = require("../controllers/vendorController");
-const { createCartController } = require("../controllers/cartController");
+const { createCartController, increDecreController, getOwnerCartsController } = require("../controllers/cartController");
+const { paymentController } = require("../controllers/paymentController");
 
 
 // Get Category 
@@ -17,7 +18,12 @@ router.get("/singleproductget/:slug", singleProductController);
 
 // Create Cart
 router.post("/createcart", createCartController);
+router.post("/incredecrecart", increDecreController);
+router.get("/getownercats", getOwnerCartsController);
 
+
+// Payment 
+router.post("/payment", paymentController);
 
 
 
