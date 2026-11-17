@@ -10,7 +10,10 @@ const createProductController = async (req, res) => {
       description,
       shortDescription,
       price,
+      discountType,
       discountPrice,
+      discountDate,
+      stock,
       category,
       subCategory,
       owner,
@@ -34,9 +37,41 @@ const createProductController = async (req, res) => {
     //   });
     // }
 
+    if (discountType && discountPrice) {
+      if (discountType == "percent") {
+        let afterDiscount = (price * discountPrice) / 100;
+        if (afterDiscount >= price) {
+          return res.status(400).json({
+            success: false,
+            message: "Invalid discount",
+          });
+        }
+      } else {
+        if (discountPrice >= price) {
+          return res.status(400).json({
+            success: false,
+            message: "Invalid discount",
+          });
+        }
+      }
+    }
+
+    if (discountDate) {
+      const inputDate = new Date(discountDate);
+      const today = new Date();
+      inputDate.setHours(0, 0, 0, 0);
+      today.setHours(0, 0, 0, 0);
+      if (inputDate < today) {
+        return res.status(400).json({
+          success: false,
+          message: "Discount date cannot be in the past",
+        });
+      }
+    }
+
     //   IMAGES
     const images = [];
-    req.files.map((item, index) => {
+    req.files?.map((item, index) => {
       images.push({
         url: item.path,
         isMain: index == isMain ? true : false,
@@ -65,7 +100,10 @@ const createProductController = async (req, res) => {
       description: description,
       shortDescription: shortDescription,
       price: price,
+      discountType: discountType,
       discountPrice: discountPrice,
+      discountDate: discountDate,
+      stock: stock,
       category: category,
       subCategory: subCategory,
       owner: owner,
@@ -116,19 +154,19 @@ const getAllProductController = async (req, res) => {
 
 const singleProductController = async (req, res) => {
   const { slug } = req.params;
-  const existingSlug= await Product.findOne({slug})
-if(!existingSlug){
-  return res.status(404).json({
-    success: false,
-    message: "Product not found",
-  });
-}
+  const existingSlug = await Product.findOne({ slug });
+  if (!existingSlug) {
+    return res.status(404).json({
+      success: false,
+      message: "Product not found",
+    });
+  }
 
   res.status(200).json({
     success: true,
     message: "Single Product",
-    data: existingSlug
-  })
+    data: existingSlug,
+  });
 };
 
 // CATEGORY WISE PRODUCT
