@@ -41,8 +41,15 @@ const productSchema = new Schema(
         },
       },
     ],
+    discountType: {
+      type: String,
+      enum: ["percent", "fixed"],
+    },
     discountPrice: {
       type: Number,
+    },
+    discountDate: {
+      type: Date,
     },
     stock: {
       type: Number,
@@ -60,12 +67,11 @@ const productSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "SubCategory",
     },
-    
+
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    
   },
   { timestamps: true },
 );
