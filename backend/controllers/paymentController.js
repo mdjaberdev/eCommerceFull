@@ -1,5 +1,6 @@
 const axios = require("axios");
 const Cart = require("../models/cartSchema");
+const Coupon = require("../models/couponSchema");
 
 const paymentController = async (req, res) => {
   const {
@@ -13,6 +14,7 @@ const paymentController = async (req, res) => {
     cus_postcode,
     cus_phone,
     ownerId,
+    coupon,
   } = req.body;
 
   const allCart = await Cart.find({ ownerId: ownerId }).populate("productId");
@@ -33,8 +35,26 @@ const paymentController = async (req, res) => {
     }
   });
 
-  console.log(total);
+  if (coupon) {
+    const existingCoupon = await Coupon.findOne({ code: coupon });
+    if (total < existingCoupon.couponType) {
+      return res.status(400).json({
+        success: false,
+        message: `Please add at least ${existingCoupon.minimumAmount} taka to use this coupon.`,
+      });
+    }
 
+    if (existingCoupon.couponType == "percent") {
+      let afterTotal = (total * existingCoupon.couponAmount) / 100;
+      total = total - afterTotal;
+    } else {
+      if (existingCoupon.couponType == "fixed") {
+        total = total - existingCoupon.couponAmount;
+      }
+    }
+  }
+
+  console.log(total);
   try {
     const paymentData = {
       store_id: "aamarpaytest",
