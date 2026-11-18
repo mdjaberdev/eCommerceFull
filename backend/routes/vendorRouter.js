@@ -10,7 +10,8 @@ const {
   allOwnerwiseCategoryController,
 } = require("../controllers/vendorController");
 const { createProductController, categoryWiseProductController, subCategoryWiseProductController, ownerWiseProductController, deleteProductController, bulkProductUploadController, exportProductsController, updateProductController, } = require("../controllers/productController");
-const upload = require("../utils/multerStorage")
+const upload = require("../utils/multerStorage");
+const { createCouponController } = require("../controllers/couponController");
 
 const router = express.Router();
 
@@ -35,6 +36,9 @@ router.post("/updateproduct/:id",upload.array("photo") ,updateProductController)
 router.delete("/deleteproduct/:id", deleteProductController);
 router.post("/bulkproductupload",upload.single('file'), bulkProductUploadController);
 router.get("/bulkproductdownload", exportProductsController);
+
+//Coupon 
+router.post("/createcoupon", createCouponController);
 
 
 module.exports = router;
