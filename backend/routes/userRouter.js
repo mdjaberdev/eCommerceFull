@@ -3,7 +3,7 @@ const router = express.Router()
 const { singleProductController, getAllProductController } = require("../controllers/productController");
 const { allCategoryController, allSubCategoryController } = require("../controllers/vendorController");
 const { createCartController, increDecreController, getOwnerCartsController } = require("../controllers/cartController");
-const { paymentController } = require("../controllers/paymentController");
+const { paymentController, paymentVerifyController } = require("../controllers/paymentController");
 
 
 // Get Category 
@@ -24,6 +24,7 @@ router.get("/getownercats", getOwnerCartsController);
 
 // Payment 
 router.post("/payment", paymentController);
+router.get("/paymentverify/:tran_id/:ownerId", paymentVerifyController);
 
 
 

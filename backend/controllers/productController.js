@@ -154,6 +154,12 @@ const getAllProductController = async (req, res) => {
 
 const singleProductController = async (req, res) => {
   const { slug } = req.params;
+  if (!slug) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid Data",
+    });
+  }
   const existingSlug = await Product.findOne({ slug });
   if (!existingSlug) {
     return res.status(404).json({
@@ -173,6 +179,12 @@ const singleProductController = async (req, res) => {
 const categoryWiseProductController = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Data",
+      });
+    }
     const categoryWisePro = await Product.find({ category: id }).populate([
       "category",
       "subCategory",
@@ -204,6 +216,12 @@ const categoryWiseProductController = async (req, res) => {
 const subCategoryWiseProductController = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Data",
+      });
+    }
     const subCategoryWisePro = await Product.find({ subCategory: id });
 
     if (!subCategoryWisePro || subCategoryWisePro.length == 0) {
@@ -231,6 +249,12 @@ const subCategoryWiseProductController = async (req, res) => {
 const ownerWiseProductController = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Data",
+      });
+    }
     const ownerWisePro = await Product.find({ owner: id });
 
     if (!ownerWisePro || ownerWisePro.length == 0) {
@@ -257,7 +281,12 @@ const ownerWiseProductController = async (req, res) => {
 // UPDATEPRODUCT
 const updateProductController = async (req, res) => {
   const { id } = req.params;
-
+  if (!id) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid Data",
+    });
+  }
   if (req.body.sku || req.body.slug) {
     return res.status(400).json({
       success: false,
@@ -308,6 +337,12 @@ const updateProductController = async (req, res) => {
 const deleteProductController = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid Data",
+      });
+    }
     const deletepro = await Product.findByIdAndDelete(id);
 
     if (!deletepro) {
