@@ -199,4 +199,16 @@ const paymentVerifyController = async (req, res) => {
   }
 };
 
-module.exports = { paymentController, paymentVerifyController };
+const reOrderController = async (req, res) => {
+  const {orderId} = req.body
+  
+  const existingOrder = await Order.findOne({_id: orderId})
+  console.log(existingOrder);
+  
+}
+
+module.exports = {
+  paymentController,
+  paymentVerifyController,
+  reOrderController,
+};
